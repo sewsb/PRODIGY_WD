@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tic Tac Toe</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .container {
+    text-align: center;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    grid-gap: 5px;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .cell {
+    width: 100px;
+    height: 100px;
+    background-color: #ccc;
+    border: 2px solid #fff;
+    font-size: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+  }
+
+  .cell:hover {
+    background-color: #e0e0e0;
+  }
+
+  .cell.clicked {
+    transform: scale(0.9);
+  }
+
+  .status {
+    font-size: 24px;
+    margin-top: 20px;
+    color: #333;
+  }
+
+  .button {
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-top: 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+
+  .button:hover {
+    background-color: #45a049;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="grid" id="grid">
+    <div class="cell" data-index="0"></div>
+    <div class="cell" data-index="1"></div>
+    <div class="cell" data-index="2"></div>
+    <div class="cell" data-index="3"></div>
+    <div class="cell" data-index="4"></div>
+    <div class="cell" data-index="5"></div>
+    <div class="cell" data-index="6"></div>
+    <div class="cell" data-index="7"></div>
+    <div class="cell" data-index="8"></div>
+  </div>
+  <div class="status" id="status"></div>
+  <button class="button" id="restartBtn">Restart Game</button>
+  <button class="button" id="toggleModeBtn">Switch Mode</button>
+</div>
+
+<script>
+  const grid = document.getElementById('grid');
+  const cells = document.querySelectorAll('.cell');
+  const status = document.getElementById('status');
+  const restartBtn = document.getElementById('restartBtn');
+  const toggleModeBtn = document.getElementById('toggleModeBtn');
+  let currentPlayer = 'X';
+  let gameActive = true;
+  let winner = null;
+  let playerMark = 'X';
+  let aiMark = 'O';
+  let isAgainstAi = true;
+
+  function handleCellClick(event) {
+    const cell = event.target;
+    const index = parseInt(cell.getAttribute('data-index'));
+
+    if (cell.textContent !== '' || !gameActive || winner !== null) return;
+
+    cell.textContent = currentPlayer;
+    cell.classList.add('clicked');
+    checkWin();
+    checkDraw();
+
+    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+    status.textContent = `${currentPlayer}'s turn`;
+
+    if (isAgainstAi && currentPlayer === aiMark && gameActive) {
+      setTimeout(makeAiMove, 500);
+    }
+  }
+
+  function makeAiMove() {
+    const availableCells = [...cells].filter(cell => cell.textContent === '');
+    const randomIndex = Math.floor(Math.random() * availableCells.length);
+    const aiCell = availableCells[randomIndex];
+    aiCell.textContent = aiMark;
+
+    checkWin();
+    checkDraw();
+
+    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+    status.textContent = `${currentPlayer}'s turn`;
+  }
+
+  function checkWin() {
+    const winConditions = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6]
+    ];
+
+    winConditions.forEach(condition => {
+      const [a, b, c] = condition;
+      const cellA = cells[a].textContent;
+      const cellB = cells[b].textContent;
+      const cellC = cells[c].textContent;
+
+      if (cellA !== '' && cellA === cellB && cellA === cellC) {
+        cells[a].style.backgroundColor = '#4CAF50';
+        cells[b].style.backgroundColor = '#4CAF50';
+        cells[c].style.backgroundColor = '#4CAF50';
+        gameActive = false;
+        winner = cellA;
+        status.textContent = `${winner} wins!`;
+      }
+    });
+  }
+
+  function checkDraw() {
+    if ([...cells].every(cell => cell.textContent !== '') && winner === null) {
+      gameActive = false;
+      status.textContent = 'It\'s a draw!';
+    }
+  }
+
+  function restartGame() {
+    cells.forEach(cell => {
+      cell.textContent = '';
+      cell.classList.remove('clicked');
+      cell.style.backgroundColor = '#ccc';
+    });
+    currentPlayer = 'X';
+    gameActive = true;
+    winner = null;
+    status.textContent = `${currentPlayer}'s turn`;
+
+    if (isAgainstAi && aiMark === 'X') {
+      setTimeout(makeAiMove, 500);
+    }
+  }
+
+  function toggleMode() {
+    isAgainstAi = !isAgainstAi;
+    currentPlayer = 'X';
+    winner = null;
+    gameActive = true;
+
+    if (isAgainstAi) {
+      toggleModeBtn.textContent = 'Switch to Two Players';
+      status.textContent = `${currentPlayer}'s turn`;
+    } else {
+      toggleModeBtn.textContent = 'Switch to AI Mode';
+      status.textContent = `Player 1's turn`;
+    }
+
+    restartGame();
+  }
+
+  cells.forEach(cell => {
+    cell.addEventListener('click', handleCellClick);
+  });
+
+  restartBtn.addEventListener('click', restartGame);
+  toggleModeBtn.addEventListener('click', toggleMode);
+
+  status.textContent = `${currentPlayer}'s turn`;
+</script>
+
+</body>
+</html>
