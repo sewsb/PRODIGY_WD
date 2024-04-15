@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Navigation Menu</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #333;
+    padding: 10px 0;
+    transition: background-color 0.3s ease;
+    z-index: 1000;
+  }
+
+  .navbar a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    transition: color 0.3s ease;
+  }
+  .navbar:hover {
+    padding: 30px 0;
+  }
+
+  .navbar-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+  }
+
+  .logo {
+    color: white;
+    font-size: 24px;
+    text-decoration: none;
+  }
+
+  .menu {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .menu li {
+    margin: 0 10px;
+  }
+
+  .menu a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    transition: color 0.3s;
+  }
+
+  .menu a:hover {
+    color: #ff6347;
+  }
+
+  .dropdown {
+    position: relative;
+  }
+
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #333;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+
+  .dropdown-content a {
+    color: white;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+
+  .dropdown-content a:hover {
+    background-color: #555;
+  }
+
+  /* Dummy content to create scrolling */
+  .content {
+    height: 2000px;
+    padding-top: 100px; /* Adjust for fixed navbar height */
+  }
+
+  .navbar a:hover {
+    color: #ff6347; /* Change color on hover */
+  }
+
+  /* Add a class to change background color when scrolled */
+  .navbar.scrolled {
+    background-color: #222;
+  }
+
+  /* Dummy content to create scrolling */
+  .content {
+    height: 2000px;
+    background-color: #f0f0f0;
+    padding-top: 50px; /* Adjust for fixed navbar height */
+  }
+</style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-inner">
+          <a href="#" class="logo">Swez</a>
+          <ul class="menu">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropbtn">Services</a>
+              <div class="dropdown-content">
+                <a href="#">Service 1</a>
+                <a href="#">Service 2</a>
+                <a href="#">Service 3</a>
+              </div>
+            </li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+
+
+
+<script>
+  // Get the navbar
+  var navbar = document.getElementById("navbar");
+
+  // When the user scrolls the page, execute scrollFunction
+  window.onscroll = function() {scrollFunction()};
+
+  function scrollFunction() {
+    // If the scroll position is greater than 50px, add the "scrolled" class to the navbar, otherwise remove it
+    if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
+      navbar.classList.add("scrolled");
+    } else {
+      navbar.classList.remove("scrolled");
+    }
+  }
+</script>
+
+</body>
+</html>
